@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smoke Circle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===== LOADING SCREEN ===== -->
+  <div id="loader">
+    <div class="loader-label">প্রবেশ করার আগে একটা টান</div>
+    <div class="cig-wrap">
+      <div class="smoke-plume">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <div class="cigarette">
+        <div class="filter-tip"></div>
+        <div class="paper-track">
+          <div class="ash" id="ash"></div>
+          <div class="ember" id="ember"></div>
+        </div>
+      </div>
+    </div>
+    <div class="pct" id="pct">0<span>%</span></div>
+    <div class="loader-sub" id="loaderSub">জ্বলছে...</div>
+  </div>
+
+  <!-- ===== AMBIENT BACKGROUND ANIMATION (floating smoke + ash, whole site) ===== -->
+  <div class="ambient-layer" id="ambientLayer"></div>
+  <div class="noise"></div>
+
+  <!-- ===== MAIN SITE ===== -->
+  <div id="main">
+    <nav>
+      <div class="brand">SMOKE<em>CIRCLE</em></div>
+      <div class="tag">DEDICATED TO YOUR SMOKING PARTNERS</div>
+    </nav>
+
+    <section class="hero">
+      <div class="eyebrow">একটা সিগারেট, একটা আড্ডা</div>
+      <h1>যাদের সাথে <span class="glow">টান</span> ভাগ করি,<br>তাদের জন্য এই জায়গা</h1>
+      <p><strong>ভার্সিটির পিছনে চায়ের দোকানে</strong> — যত আড্ডা, যত গল্প, সব হইছে একটা সিগারেট ঘিরে।</p>
+      <div class="hero-cta">
+        <button class="btn primary">গ্রুপে জয়েন করো</button>
+        <button class="btn">পরিচয় পড়ো</button>
+      </div>
+    </section>
+
+    <section class="intro">
+      <div>
+        <div class="intro-label">পরিচিতি</div>
+        <h2>আমরা কারা</h2>
+      </div>
+      <div class="intro-body">
+        <p>আমরা হচ্ছি সেই সকল পাপী যারা আজাইরা টাকা দিয়া ধুয়া উড়াই।</p>
+        <p>এইটা হচ্ছে পাপের হিসাব খানা।</p>
+      </div>
+    </section>
+
+    <section class="profiles">
+      <div class="features-head">
+        <h2>পাপীরা</h2>
+        <span>একজন একজন করে যোগ হবে</span>
+      </div>
+      <div class="profile-grid">
+
+        <div class="profile-card">
+          <div class="profile-pic">
+            <img src="img/profile1.jpg" alt="Tamim londe">
+          </div>
+          <h3>Tamim londe</h3>
+          <div class="profile-role">প্রিয় ব্র্যান্ড: Marlboro Red Advance</div>
+          <p>গ্রুপের সব থেকে ভালো ছেলে, সবাইরে ফোন দিয়া আড্ডা জমায়।</p>
+        </div>
+
+        <div class="profile-card">
+          <div class="profile-pic">
+            <img src="img/profile2.jpg" alt="Tushar Tute">
+          </div>
+          <h3>Tushar Tute</h3>
+          <div class="profile-role">প্রিয় ব্র্যান্ড: Marlboro Advance</div>
+          <p>দেখতে প্লেবয় হইলেও আসলে খুবই লয়াল ছেলে, প্রচুর পারফিউমের নেশা।</p>
+        </div>
+
+        <div class="profile-card">
+          <div class="profile-pic">
+            <img src="img/profile3.jpg" alt="Midul laure">
+          </div>
+          <h3>Midul laure</h3>
+          <div class="profile-role">প্রিয় ব্র্যান্ড: Mond</div>
+          <p>সবচেয়ে বেশি গল্প বলে, তবু গ্রুপের প্রাণ। একটু ল্যারেলাপ্পা টাইপ।</p>
+        </div>
+
+        <div class="profile-card">
+          <div class="profile-pic">
+            <img src="img/profile4.jpg" alt="Irfan muthmare">
+          </div>
+          <h3>Irfan muthmare</h3>
+          <div class="profile-role">প্রিয় ব্র্যান্ড: Hollywood</div>
+          <p>পিওর প্লেবয়, পার্সোনাল বেডি থাকার পরেও খালি বেডিগো পিছনে ঘোরে।</p>
+        </div>
+
+        <div class="profile-card">
+          <div class="profile-pic">
+            <img src="img/profile5.jpg" alt="Mahim">
+          </div>
+          <h3>Mahim</h3>
+          <div class="profile-role">প্রিয় ব্র্যান্ড: Nevy, Sheikh</div>
+          <p>একবার হারাইয়া গেলে আর কোনো খোঁজ ই থাকে না।</p>
+        </div>
+
+        <div class="profile-card">
+          <div class="profile-pic">
+            <img src="img/profile6.jpg" alt="Iftekhar">
+          </div>
+          <h3>Iftekhar</h3>
+          <div class="profile-role">প্রিয় ব্র্যান্ড: Lucky Strike White</div>
+          <p>গিটারিস্ট, প্রচুর গিটার বাজায়, মাঝে মাঝে গিটারে তার ও ছিঁড়ে যায়।</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== SMOKE SESSION TIMER CALCULATOR ===== -->
+    <section class="calc-section">
+      <div class="features-head">
+        <h2>⏱️ Smoke Session Timer</h2>
+        <span>হিসাব করো কতটুকু সময় পুড়ছে</span>
+      </div>
+
+      <div class="calc-card">
+        <div class="calc-row">
+          <label for="cigCount">কয়টা সিগারেট ধরাবা?</label>
+          <div class="calc-input-wrap">
+            <button class="stepper" id="decCig">−</button>
+            <input type="number" id="cigCount" value="1" min="1" max="60">
+            <button class="stepper" id="incCig">+</button>
+          </div>
+        </div>
+
+        <div class="calc-row">
+          <label for="cigMinutes">প্রতিটাতে কত মিনিট লাগে?</label>
+          <div class="calc-input-wrap">
+            <button class="stepper" id="decMin">−</button>
+            <input type="number" id="cigMinutes" value="6" min="1" max="30">
+            <button class="stepper" id="incMin">+</button>
+          </div>
+        </div>
+
+        <div class="calc-divider"></div>
+
+        <div class="calc-result">
+          <div class="calc-result-item">
+            <span class="calc-label">মোট সময় পুড়বে</span>
+            <span class="calc-value" id="totalTime">৬ মিনিট</span>
+          </div>
+          <div class="calc-result-item">
+            <span class="calc-label">এক ঘণ্টায় কতটুকু</span>
+            <span class="calc-value small" id="percentHour">১০%</span>
+          </div>
+        </div>
+
+        <!-- burning progress visual -->
+        <div class="calc-cig-visual">
+          <div class="calc-cig-track">
+            <div class="calc-cig-burnt" id="calcBurnt"></div>
+          </div>
+        </div>
+        <div class="calc-note" id="calcNote">এক কাপ চা শেষ হওয়ার আগেই তুমি এতগুলা টান শেষ করবা।</div>
+      </div>
+    </section>
+
+    <!-- ===== RANDOM SMOKE PICKER ===== -->
+    <section class="picker-section">
+      <div class="features-head">
+        <h2>🎲 Random Smoke Picker</h2>
+        <span>কে ধরাবে প্রথম, ভাগ্যই ঠিক করুক</span>
+      </div>
+
+      <div class="picker-card">
+        <div class="picker-name-display" id="pickerDisplay">?</div>
+        <button class="btn primary picker-btn" id="pickerBtn">Who's lighting first?</button>
+
+        <div class="picker-list" id="pickerList">
+          <!-- names injected by JS, editable via data-name attr already in markup below as fallback -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SPIN WHEEL ===== -->
+    <section class="spin-section">
+      <div class="features-head">
+        <h2>এখন কোনটা খাব?</h2>
+        <span>চাকা ঘুরাও, ভাগ্যে যা আছে তাই</span>
+      </div>
+
+      <div class="wheel-wrap">
+        <div class="wheel-pointer"></div>
+        <div class="wheel" id="wheel">
+          <div class="wheel-center"></div>
+        </div>
+      </div>
+
+      <button class="btn primary spin-btn" id="spinBtn">ঘুরাও</button>
+      <div class="spin-result" id="spinResult"></div>
+    </section>
+
+    <section class="calculator-section">
+
+    <h2>🧮 Crew Calculator</h2>
+
+    <div class="calculator">
+
+        <input
+            type="text"
+            id="display"
+            readonly
+            placeholder="0">
+
+        <div class="buttons">
+
+            <button class="operator" onclick="clearDisplay()">AC</button>
+            <button class="operator" onclick="deleteLast()">DEL</button>
+            <button class="operator" onclick="appendValue('%')">%</button>
+            <button class="operator" onclick="appendValue('/')">÷</button>
+
+            <button onclick="appendValue('7')">7</button>
+            <button onclick="appendValue('8')">8</button>
+            <button onclick="appendValue('9')">9</button>
+            <button class="operator" onclick="appendValue('*')">×</button>
+
+            <button onclick="appendValue('4')">4</button>
+            <button onclick="appendValue('5')">5</button>
+            <button onclick="appendValue('6')">6</button>
+            <button class="operator" onclick="appendValue('-')">−</button>
+
+            <button onclick="appendValue('1')">1</button>
+            <button onclick="appendValue('2')">2</button>
+            <button onclick="appendValue('3')">3</button>
+            <button class="operator" onclick="appendValue('+')">+</button>
+
+            <button onclick="appendValue('00')">00</button>
+            <button onclick="appendValue('0')">0</button>
+            <button onclick="appendValue('.')">.</button>
+
+            <button class="equal" onclick="calculate()">=</button>
+
+        </div>
+
+    </div>
+
+</section>
+
+    <footer>
+      <div>SMOKECIRCLE — বন্ধুদের জন্য বানানো</div>
+      <div id="year"></div>
+    </footer>
+  </div>
+
+<script src="script.js"></script>
+</body>
+</html>
