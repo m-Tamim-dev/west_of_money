@@ -1652,3 +1652,416 @@ footer{
   color: var(--smoke);
   font-size: 12px;
 }
+/* ================= TODAY'S PAYER POLL ================= */
+.poll-section{
+  padding: 100px 6vw 40px;
+  border-top: 1px solid var(--line);
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.poll-card{
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 34px 30px;
+}
+
+.poll-options{
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.poll-option{
+  position: relative;
+  background: #1c1712;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px 16px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.25s ease;
+}
+.poll-option:hover{ border-color: var(--ember); }
+.poll-option.voted-for{
+  border-color: var(--ember-bright);
+}
+.poll-option.disabled{
+  cursor: not-allowed;
+}
+
+.poll-option-fill{
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 0%;
+  background: rgba(212,98,47,0.18);
+  transition: width 0.6s ease;
+  z-index: 0;
+}
+
+.poll-option-content{
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.poll-option-name{
+  color: var(--ash);
+  font-size: 14.5px;
+}
+.poll-option-stats{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.poll-option-count{
+  font-family:'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--smoke);
+}
+.poll-option-pct{
+  font-family:'Bebas Neue', sans-serif;
+  font-size: 20px;
+  color: var(--ember-bright);
+  min-width: 44px;
+  text-align: right;
+}
+
+.poll-winner{
+  margin-top: 26px;
+  text-align: center;
+  padding: 18px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(212,98,47,0.14), transparent);
+  border: 1px solid var(--line);
+  display: none;
+}
+.poll-winner.show{ display: block; }
+.poll-winner .pw-label{
+  font-family:'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--smoke);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.poll-winner .pw-name{
+  font-family:'Bebas Neue', sans-serif;
+  font-size: 30px;
+  color: var(--ember-bright);
+  margin-top: 6px;
+}
+
+.poll-reset-btn{
+  width: 100%;
+  margin-top: 24px;
+  font-size: 12px;
+}
+/* ================= ASH CATCH GAME ================= */
+.game-section{
+  padding: 100px 6vw 40px;
+  border-top: 1px solid var(--line);
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.game-card{
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+}
+
+.game-setup{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.game-setup label{ color: var(--smoke); font-size: 14px; }
+.game-setup select{
+  background: #201a15;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px 16px;
+  color: var(--ash);
+  font-family:'Inter', sans-serif;
+  font-size: 14px;
+  min-width: 200px;
+}
+
+.game-hud{
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  margin-bottom: 18px;
+}
+.game-stat{ display:flex; flex-direction:column; align-items:center; }
+.gs-label{
+  font-family:'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--smoke);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.gs-value{
+  font-family:'Bebas Neue', sans-serif;
+  font-size: 34px;
+  color: var(--ember-bright);
+}
+
+.game-stage{
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background: #100d0b;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: crosshair;
+}
+
+.ash-target{
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff2d0, var(--ember-bright) 40%, var(--ember) 75%);
+  box-shadow: 0 0 12px 4px rgba(247,165,97,0.5);
+  cursor: pointer;
+  animation-name: ash-drop;
+  animation-timing-function: linear;
+}
+@keyframes ash-drop{
+  from{ top: -30px; }
+  to{ top: 100%; }
+}
+
+.ash-target.popped{
+  animation: none !important;
+  pointer-events: none;
+  transform: scale(1.8);
+  opacity: 0;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.game-over{
+  padding: 20px 0;
+}
+.go-title{
+  font-family:'Bebas Neue', sans-serif;
+  font-size: 26px;
+  color: var(--ash);
+}
+.go-score{
+  font-family:'Bebas Neue', sans-serif;
+  font-size: 48px;
+  color: var(--ember-bright);
+  margin: 10px 0 20px;
+}
+
+.game-leaderboard{ margin-top: 34px; }
+.game-leaderboard h3{
+  font-family:'Bebas Neue', sans-serif;
+  font-size: 22px;
+  font-weight: 400;
+  text-align: center;
+  color: var(--ash);
+  margin-bottom: 16px;
+}
+.game-lb-list{
+  display:flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.game-lb-empty{
+  text-align:center;
+  color: var(--smoke-dim);
+  font-family:'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+.game-lb-row{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 13.5px;
+}
+.game-lb-row.top{
+  border-color: var(--ember-bright);
+  background: linear-gradient(135deg, rgba(247,165,97,0.12), var(--bg-card));
+}
+.game-lb-rank{ color: var(--ember-bright); font-family:'JetBrains Mono', monospace; width: 24px; }
+.game-lb-name{ flex: 1; color: var(--ash); text-align: left; padding-left: 8px; }
+.game-lb-score{ font-family:'JetBrains Mono', monospace; color: var(--smoke); }
+
+.game-discount-note{
+  margin-top: 18px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--smoke);
+  font-style: italic;
+}
+.game-discount-note b{ color: var(--ember-bright); font-style: normal; }
+/* ================= SKY RUSH PLANE GAME (WHITE THEME) ================= */
+.plane-game-section{
+  padding: 100px 6vw 40px;
+  border-top: 1px solid var(--line);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.plane-game-card{
+  background: linear-gradient(180deg, #eaf4fb, #ffffff);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pg-setup{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 30px 0;
+}
+.pg-setup input{
+  width: 220px;
+  padding: 12px 16px;
+  border-radius: 24px;
+  border: 1px solid #cfe0ec;
+  background: #ffffff;
+  color: #223;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  text-align: center;
+}
+.pg-setup input:focus{ outline: none; border-color: #5aa9d6; }
+
+.pg-hud{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 4px 14px;
+  font-family:'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: #2a3b4c;
+  font-weight: 600;
+}
+
+.pg-canvas-wrap{
+  position: relative;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+}
+
+#pgCanvas{
+  display: block;
+  width: 100%;
+  height: auto;
+  background: linear-gradient(180deg, #bfe3f7 0%, #eaf7ff 60%, #ffffff 100%);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.pg-hint{
+  position: absolute;
+  top: 14px; left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.85);
+  color: #3a4a5a;
+  font-family:'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  pointer-events: none;
+  animation: pg-hint-fade 3.5s ease forwards;
+}
+@keyframes pg-hint-fade{
+  0%{ opacity: 1; }
+  80%{ opacity: 1; }
+  100%{ opacity: 0; }
+}
+
+.pg-overlay{
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(3px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.pg-overlay-title{
+  font-family:'Bebas Neue', sans-serif;
+  font-size: 34px;
+  color: #d4622f;
+}
+.pg-overlay-score{
+  font-family:'Inter', sans-serif;
+  font-size: 15px;
+  color: #223;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.pg-leaderboard{
+  margin-top: 40px;
+}
+.pg-leaderboard h3{
+  font-family:'Bebas Neue', sans-serif;
+  font-size: 22px;
+  font-weight: 400;
+  text-align: center;
+  color: var(--ash);
+  margin-bottom: 16px;
+}
+.pg-lb-list{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pg-lb-empty{
+  text-align: center;
+  color: var(--smoke-dim);
+  font-family:'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+.pg-lb-row{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 13.5px;
+}
+.pg-lb-row.top{
+  border-color: var(--ember-bright);
+  background: linear-gradient(135deg, rgba(247,165,97,0.12), var(--bg-card));
+}
+.pg-lb-rank{ color: var(--ember-bright); font-family:'JetBrains Mono', monospace; width: 24px; }
+.pg-lb-name{ flex: 1; color: var(--ash); text-align: left; padding-left: 8px; }
+.pg-lb-score{ font-family:'JetBrains Mono', monospace; color: var(--smoke); }
+
+.pg-discount-note{
+  margin-top: 18px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--smoke);
+  font-style: italic;
+}
+.pg-discount-note b{ color: var(--ember-bright); font-style: normal; }

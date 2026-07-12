@@ -847,3 +847,515 @@ function renderLeaderboard(){
   `).join('');
 }
 renderLeaderboard();
+/* ============ TODAY'S PAYER POLL ============ */
+const pollCandidates = [
+  "Tamim londe", "Tushar Tute", "Midul laure",
+  "Irfan muthmare", "Mahim", "Iftekhar"
+];
+
+const pollOptionsEl = document.getElementById('pollOptions');
+const pollWinnerEl = document.getElementById('pollWinner');
+const pollResetBtn = document.getElementById('pollResetBtn');
+
+function pollTodayKey(){
+  const d = new Date();
+  return `smokecircle_poll_${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+}
+
+function loadPollVotes(){
+  const raw = localStorage.getItem(pollTodayKey());
+  if(raw) return JSON.parse(raw);
+  const fresh = {};
+  pollCandidates.forEach(name => fresh[name] = 0);
+  return fresh;
+}
+
+function saveMyVote(name){
+  localStorage.setItem('smokecircle_poll_myvote_' + pollTodayKey(), name);
+}
+function getMyVote(){
+  return localStorage.getItem('smokecircle_poll_myvote_' + pollTodayKey());
+}
+
+function renderPoll(){
+  const votes = loadPollVotes();
+  const myVote = getMyVote();
+  const totalVotes = Object.values(votes).reduce((a, b) => a + b, 0);
+
+  pollOptionsEl.innerHTML = '';
+
+  pollCandidates.forEach(name => {
+    const count = votes[name] || 0;
+    const pct = totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0;
+
+    const opt = document.createElement('div');
+    opt.className = 'poll-option';
+    if(myVote === name) opt.classList.add('voted-for');
+    if(myVote) opt.classList.add('disabled');
+
+    opt.innerHTML = `
+      <div class="poll-option-fill" style="width:${pct}%"></div>
+      <div class="poll-option-content">
+        <span class="poll-option-name">${myVote === name ? '✅ ' : ''}${name}</span>
+        <span class="poll-option-stats">
+          <span class="poll-option-count">${count} ভোট</span>
+          <span class="poll-option-pct">${pct}%</span>
+        </span>
+      </div>
+    `;
+
+    if(!myVote){
+      opt.addEventListener('click', () => {
+        votes[name] = (votes[name] || 0) + 1;
+        localStorage.setItem(pollTodayKey(), JSON.stringify(votes));
+        saveMyVote(name);
+        renderPoll();
+      });
+    }
+
+    pollOptionsEl.appendChild(opt);
+  });
+
+  // ---- সবচেয়ে বেশি ভোট পাওয়া জন হাইলাইট ----
+  if(totalVotes > 0){
+    let winner = pollCandidates[0];
+    let maxVotes = -1;
+    pollCandidates.forEach(name => {
+      if((votes[name] || 0) > maxVotes){
+        maxVotes = votes[name] || 0;
+        winner = name;
+      }
+    });
+    pollWinnerEl.innerHTML = `
+      <div class="pw-label">এগিয়ে আছে</div>
+      <div class="pw-name">🎯 ${winner}</div>
+    `;
+    pollWinnerEl.classList.add('show');
+  } else {
+    pollWinnerEl.classList.remove('show');
+  }
+}
+
+pollResetBtn.addEventListener('click', () => {
+  if(!confirm('নতুন করে পোল শুরু করলে আজকের সব ভোট মুছে যাবে। নিশ্চিত?')) return;
+  const fresh = {};
+  pollCandidates.forEach(name => fresh[name] = 0);
+  localStorage.setItem(pollTodayKey(), JSON.stringify(fresh));
+  localStorage.removeItem('smokecircle_poll_myvote_' + pollTodayKey());
+  renderPoll();
+});
+
+renderPoll();
+/* ============ ASH CATCH GAME ============ */
+const gameSetup = document.getElementById('gameSetup');
+const gameHud = document.getElementById('gameHud');
+const gameStage = document.getElementById('gameStage');
+const gameOverEl = document.getElementById('gameOver');
+const gameScoreEl = document.getElementById('gameScore');
+const gameTimerEl = document.getElementById('gameTimer');
+const goScoreEl = document.getElementById('goScore');
+const gameLbList = document.getElementById('gameLbList');
+const gameDiscountNote = document.getElementById('gameDiscountNote');
+
+let gameScore = 0;
+let gameTimeLeft = 30;
+let gameCountdownInterval = null;
+let gameSpawnInterval = null;
+let gamePlayerName = '';
+let gameRunning = false;
+
+document.getElementById('gameStartBtn').addEventListener('click', () => {
+  gamePlayerName = document.getElementById('gamePlayerSelect').value;
+  startGame();
+});
+document.getElementById('gamePlayAgainBtn').addEventListener('click', () => {
+  gameOverEl.style.display = 'none';
+  startGame();
+});
+
+function startGame(){
+  gameScore = 0;
+  gameTimeLeft = 30;
+  gameRunning = true;
+  gameScoreEl.textContent = '0';
+  gameTimerEl.textContent = '30';
+  gameSetup.style.display = 'none';
+  gameOverEl.style.display = 'none';
+  gameHud.style.display = 'flex';
+  gameStage.innerHTML = '';
+
+  gameCountdownInterval = setInterval(() => {
+    gameTimeLeft--;
+    gameTimerEl.textContent = gameTimeLeft;
+    if(gameTimeLeft <= 0) endGame();
+  }, 1000);
+
+  gameSpawnInterval = setInterval(spawnAshTarget, 550);
+}
+
+function spawnAshTarget(){
+  if(!gameRunning) return;
+  const target = document.createElement('div');
+  target.className = 'ash-target';
+
+  const stageWidth = gameStage.clientWidth;
+  const size = 26;
+  target.style.left = Math.random() * (stageWidth - size) + 'px';
+
+  const fallDuration = 1.6 + Math.random() * 1.2;
+  target.style.animationDuration = fallDuration + 's';
+
+  target.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if(target.classList.contains('popped')) return;
+    target.classList.add('popped');
+    gameScore++;
+    gameScoreEl.textContent = gameScore;
+    setTimeout(() => target.remove(), 260);
+  });
+
+  target.addEventListener('animationend', () => {
+    if(!target.classList.contains('popped')) target.remove();
+  });
+
+  gameStage.appendChild(target);
+}
+
+function endGame(){
+  gameRunning = false;
+  clearInterval(gameCountdownInterval);
+  clearInterval(gameSpawnInterval);
+  gameStage.innerHTML = '';
+  gameHud.style.display = 'none';
+  goScoreEl.textContent = `${gamePlayerName} — স্কোর: ${gameScore}`;
+  gameOverEl.style.display = 'block';
+
+  saveGameScore(gamePlayerName, gameScore);
+}
+
+function saveGameScore(name, score){
+  const raw = localStorage.getItem('smokecircle_ashGameScores');
+  const scores = raw ? JSON.parse(raw) : {};
+
+  // প্রতিজনের সবচেয়ে ভালো স্কোরটাই রাখা হবে
+  if(!scores[name] || score > scores[name]){
+    scores[name] = score;
+  }
+  localStorage.setItem('smokecircle_ashGameScores', JSON.stringify(scores));
+  renderGameLeaderboard();
+}
+
+function renderGameLeaderboard(){
+  const raw = localStorage.getItem('smokecircle_ashGameScores');
+  const scores = raw ? JSON.parse(raw) : {};
+
+  const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+
+  if(sorted.length === 0){
+    gameLbList.innerHTML = '<div class="game-lb-empty">এখনো কেউ খেলেনি — প্রথম হও!</div>';
+    gameDiscountNote.textContent = '';
+    return;
+  }
+
+  gameLbList.innerHTML = sorted.map(([name, score], i) => `
+    <div class="game-lb-row ${i === 0 ? 'top' : ''}">
+      <span class="game-lb-rank">#${i + 1}</span>
+      <span class="game-lb-name">${name}</span>
+      <span class="game-lb-score">${score} পয়েন্ট</span>
+    </div>
+  `).join('');
+
+  const topName = sorted[0][0];
+  gameDiscountNote.innerHTML = `🏆 <b>${topName}</b> সবচেয়ে বেশি স্কোর করছে — Crew Calculator-এ ওর জন্য একটু কম শেয়ার বসায় দিও 😄`;
+}
+renderGameLeaderboard();
+/* ============ SKY RUSH PLANE GAME ============ */
+(function(){
+  const canvas = document.getElementById('pgCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  const pgSetup = document.getElementById('pgSetup');
+  const pgHud = document.getElementById('pgHud');
+  const pgScoreDisplay = document.getElementById('pgScoreDisplay');
+  const pgBestDisplay = document.getElementById('pgBestDisplay');
+  const pgOverlay = document.getElementById('pgOverlay');
+  const pgOverlayScore = document.getElementById('pgOverlayScore');
+  const pgHint = document.getElementById('pgHint');
+
+  let playerName = '';
+  let running = false;
+  let animId = null;
+
+  const plane = { x: 70, y: H/2, vy: 0, w: 36, h: 20, angle: 0 };
+  const GRAVITY = 0.32;
+  const FLAP = -6.2;
+
+  let obstacles = [];
+  let clouds = [];
+  let trail = [];
+  let score = 0;
+  let frame = 0;
+  const GAP = 150;
+  const OBST_W = 60;
+  const SPEED = 2.6;
+
+  function resetGame(){
+    plane.y = H/2; plane.vy = 0; plane.angle = 0;
+    obstacles = [];
+    trail = [];
+    score = 0; frame = 0;
+    for(let i=0;i<4;i++){
+      clouds.push({ x: Math.random()*W, y: 40+Math.random()*180, s: 20+Math.random()*20, sp: 0.3+Math.random()*0.4 });
+    }
+  }
+
+  function spawnObstacle(){
+    const gapY = 70 + Math.random() * (H - 140 - GAP);
+    obstacles.push({ x: W + 20, gapY: gapY, passed: false });
+  }
+
+  function flap(){
+    if(!running) return;
+    plane.vy = FLAP;
+    for(let i=0;i<4;i++){
+      trail.push({ x: plane.x - 10, y: plane.y + (Math.random()*10-5), life: 1 });
+    }
+  }
+
+  canvas.addEventListener('click', flap);
+  canvas.addEventListener('touchstart', (e)=>{ e.preventDefault(); flap(); }, {passive:false});
+  window.addEventListener('keydown', (e)=>{
+    if(e.code === 'Space' && running){ e.preventDefault(); flap(); }
+  });
+
+  function drawPlane(){
+    ctx.save();
+    ctx.translate(plane.x, plane.y);
+    const targetAngle = Math.max(-25, Math.min(50, plane.vy * 4));
+    plane.angle += (targetAngle - plane.angle) * 0.15;
+    ctx.rotate(plane.angle * Math.PI/180);
+
+    // body
+    ctx.fillStyle = '#e84c3d';
+    ctx.beginPath();
+    ctx.moveTo(-16, 0);
+    ctx.quadraticCurveTo(0, -8, 18, -2);
+    ctx.quadraticCurveTo(22, 0, 18, 2);
+    ctx.quadraticCurveTo(0, 8, -16, 0);
+    ctx.fill();
+
+    // wing
+    ctx.fillStyle = '#c0392b';
+    ctx.beginPath();
+    ctx.moveTo(-4, 2);
+    ctx.lineTo(-14, 14);
+    ctx.lineTo(2, 4);
+    ctx.closePath();
+    ctx.fill();
+
+    // tail
+    ctx.fillStyle = '#c0392b';
+    ctx.beginPath();
+    ctx.moveTo(-14, -2);
+    ctx.lineTo(-22, -12);
+    ctx.lineTo(-10, -3);
+    ctx.closePath();
+    ctx.fill();
+
+    // cockpit
+    ctx.fillStyle = '#eaf7ff';
+    ctx.beginPath();
+    ctx.ellipse(6, -1, 4, 3, 0, 0, Math.PI*2);
+    ctx.fill();
+
+    // propeller (spinning)
+    ctx.strokeStyle = '#555';
+    ctx.lineWidth = 2;
+    ctx.save();
+    ctx.translate(19, 0);
+    ctx.rotate(frame * 0.9);
+    ctx.beginPath();
+    ctx.moveTo(0,-7); ctx.lineTo(0,7);
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.restore();
+  }
+
+  function drawTrail(){
+    trail.forEach(p => {
+      ctx.globalAlpha = p.life * 0.5;
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 4 * p.life, 0, Math.PI*2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      p.x -= 1.5; p.life -= 0.04;
+    });
+    trail = trail.filter(p => p.life > 0);
+  }
+
+  function drawCloudShape(x, y, s){
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.beginPath();
+    ctx.arc(x, y, s*0.6, 0, Math.PI*2);
+    ctx.arc(x+s*0.5, y+4, s*0.5, 0, Math.PI*2);
+    ctx.arc(x-s*0.5, y+4, s*0.45, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  function drawBackgroundClouds(){
+    clouds.forEach(c => {
+      drawCloudShape(c.x, c.y, c.s);
+      c.x -= c.sp;
+      if(c.x < -40) c.x = W + 40;
+    });
+  }
+
+  function drawObstacle(o){
+    // উপরের বাধা (মেঘের স্তম্ভ)
+    ctx.fillStyle = '#8bb8d8';
+    ctx.fillRect(o.x, 0, OBST_W, o.gapY);
+    ctx.fillStyle = '#a9cbe4';
+    for(let i=0;i<3;i++){
+      drawCloudShape(o.x + OBST_W/2, o.gapY - 14 - i*16, 26);
+    }
+    // নিচের বাধা
+    ctx.fillStyle = '#8bb8d8';
+    ctx.fillRect(o.x, o.gapY + GAP, OBST_W, H - (o.gapY + GAP));
+    ctx.fillStyle = '#a9cbe4';
+    for(let i=0;i<3;i++){
+      drawCloudShape(o.x + OBST_W/2, o.gapY + GAP + 14 + i*16, 26);
+    }
+  }
+
+  function checkCollision(o){
+    const px = plane.x, py = plane.y, pr = 12;
+    if(px + pr > o.x && px - pr < o.x + OBST_W){
+      if(py - pr < o.gapY || py + pr > o.gapY + GAP){
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function loop(){
+    if(!running) return;
+    frame++;
+    ctx.clearRect(0,0,W,H);
+
+    // gradient sky
+    const g = ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0, '#bfe3f7');
+    g.addColorStop(0.6, '#eaf7ff');
+    g.addColorStop(1, '#ffffff');
+    ctx.fillStyle = g;
+    ctx.fillRect(0,0,W,H);
+
+    drawBackgroundClouds();
+
+    // physics
+    plane.vy += GRAVITY;
+    plane.y += plane.vy;
+
+    if(frame % 100 === 0) spawnObstacle();
+
+    let crashed = false;
+    obstacles.forEach(o => {
+      o.x -= SPEED;
+      drawObstacle(o);
+      if(!o.passed && o.x + OBST_W < plane.x){
+        o.passed = true;
+        score++;
+        pgScoreDisplay.textContent = 'স্কোর: ' + score;
+      }
+      if(checkCollision(o)) crashed = true;
+    });
+    obstacles = obstacles.filter(o => o.x > -OBST_W);
+
+    if(plane.y - 12 < 0 || plane.y + 12 > H) crashed = true;
+
+    drawTrail();
+    drawPlane();
+
+    if(crashed){
+      endGame();
+      return;
+    }
+
+    animId = requestAnimationFrame(loop);
+  }
+
+  function startGame(){
+    playerName = document.getElementById('pgNameInput').value.trim() || 'Unknown';
+    resetGame();
+    running = true;
+    pgSetup.style.display = 'none';
+    pgHud.style.display = 'flex';
+    pgOverlay.style.display = 'none';
+    pgHint.style.display = 'block';
+    pgScoreDisplay.textContent = 'স্কোর: 0';
+
+    const best = getBestScore(playerName);
+    pgBestDisplay.textContent = best ? `সেরা: ${best}` : '';
+
+    animId = requestAnimationFrame(loop);
+  }
+
+  function endGame(){
+    running = false;
+    cancelAnimationFrame(animId);
+    pgOverlayScore.textContent = `${playerName} — স্কোর: ${score}`;
+    pgOverlay.style.display = 'flex';
+    saveScore(playerName, score);
+  }
+
+  document.getElementById('pgStartBtn').addEventListener('click', startGame);
+  document.getElementById('pgRetryBtn').addEventListener('click', startGame);
+
+  function getScores(){
+    const raw = localStorage.getItem('smokecircle_planeScores');
+    return raw ? JSON.parse(raw) : {};
+  }
+  function getBestScore(name){
+    const scores = getScores();
+    return scores[name] || 0;
+  }
+  function saveScore(name, sc){
+    const scores = getScores();
+    if(!scores[name] || sc > scores[name]) scores[name] = sc;
+    localStorage.setItem('smokecircle_planeScores', JSON.stringify(scores));
+    renderPgLeaderboard();
+  }
+
+  function renderPgLeaderboard(){
+    const scores = getScores();
+    const sorted = Object.entries(scores).sort((a,b) => b[1]-a[1]);
+    const list = document.getElementById('pgLbList');
+    const note = document.getElementById('pgDiscountNote');
+
+    if(sorted.length === 0){
+      list.innerHTML = '<div class="pg-lb-empty">এখনো কেউ খেলেনি — প্রথম হও!</div>';
+      note.textContent = '';
+      return;
+    }
+
+    list.innerHTML = sorted.map(([name, sc], i) => `
+      <div class="pg-lb-row ${i===0 ? 'top' : ''}">
+        <span class="pg-lb-rank">#${i+1}</span>
+        <span class="pg-lb-name">${name}</span>
+        <span class="pg-lb-score">${sc} পয়েন্ট</span>
+      </div>
+    `).join('');
+
+    note.innerHTML = `🏆 <b>${sorted[0][0]}</b> সবচেয়ে বেশি স্কোর করছে — Crew Calculator-এ ওর শেয়ার একটু কম বসায় দিও 😄`;
+  }
+
+  // প্রথমবার ক্যানভাসে idle preview দেখানো
+  ctx.fillStyle = '#eaf7ff';
+  ctx.fillRect(0,0,W,H);
+  drawPlane();
+
+  renderPgLeaderboard();
+})();

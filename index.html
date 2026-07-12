@@ -309,6 +309,21 @@
     </div>
 
 </section>
+<!-- ===== TODAY'S PAYER POLL ===== -->
+    <section class="poll-section">
+      <div class="features-head">
+        <h2>🗳️ আজকে কে দিবে?</h2>
+        <span>ভোট দাও, আজকের ভাগ্যবান/হতভাগ্য বেছে নাও</span>
+      </div>
+
+      <div class="poll-card">
+        <div class="poll-options" id="pollOptions"></div>
+
+        <div class="poll-winner" id="pollWinner"></div>
+
+        <button class="btn poll-reset-btn" id="pollResetBtn">🔄 নতুন দিনের পোল শুরু করো</button>
+      </div>
+    </section>
 <!-- ===== BIRTHDAY TRACKER ===== -->
     <section class="bday-section">
       <div class="features-head">
@@ -321,6 +336,41 @@
 
       <!-- সবার তালিকা -->
       <div class="bday-grid" id="bdayGrid"></div>
+    </section>
+    <!-- ===== SKY RUSH PLANE GAME ===== -->
+    <section class="plane-game-section">
+      <div class="features-head">
+        <h2>✈️ Sky Rush</h2>
+        <span>মেঘ এড়িয়ে যত দূর যাওয়া যায়</span>
+      </div>
+
+      <div class="plane-game-card">
+        <div class="pg-setup" id="pgSetup">
+          <input type="text" id="pgNameInput" placeholder="তোমার নাম লিখো" maxlength="20">
+          <button class="btn primary" id="pgStartBtn">▶️ উড়াও</button>
+        </div>
+
+        <div class="pg-hud" id="pgHud" style="display:none;">
+          <span id="pgScoreDisplay">স্কোর: 0</span>
+          <span id="pgBestDisplay"></span>
+        </div>
+
+        <div class="pg-canvas-wrap">
+          <canvas id="pgCanvas" width="360" height="480"></canvas>
+          <div class="pg-hint" id="pgHint">ক্লিক / ট্যাপ / স্পেসবার — প্লেন উপরে উঠবে</div>
+          <div class="pg-overlay" id="pgOverlay" style="display:none;">
+            <div class="pg-overlay-title">💥 Crash!</div>
+            <div class="pg-overlay-score" id="pgOverlayScore"></div>
+            <button class="btn primary" id="pgRetryBtn">🔁 আবার উড়াও</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pg-leaderboard">
+        <h3>🏆 Sky Rush Leaderboard</h3>
+        <div class="pg-lb-list" id="pgLbList"></div>
+        <div class="pg-discount-note" id="pgDiscountNote"></div>
+      </div>
     </section>
 <!-- ===== SMOKE RING STREAK COUNTER ===== -->
     <section class="ring-section">
@@ -378,6 +428,53 @@
       <div class="lighter-leaderboard">
         <h3>🏆 সেরা রেকর্ড</h3>
         <div class="lb-list" id="lbList"></div>
+      </div>
+    </section>
+    <!-- ===== ASH CATCH GAME ===== -->
+    <section class="game-section">
+      <div class="features-head">
+        <h2>🎯 Ash Catch</h2>
+        <span>বেশি স্কোর করলে বিল কম — ৩০ সেকেন্ডের চ্যালেঞ্জ</span>
+      </div>
+
+      <div class="game-card">
+        <div class="game-setup" id="gameSetup">
+          <label for="gamePlayerSelect">তুমি কে?</label>
+          <select id="gamePlayerSelect">
+            <option value="Tamim londe">Tamim londe</option>
+            <option value="Tushar Tute">Tushar Tute</option>
+            <option value="Midul laure">Midul laure</option>
+            <option value="Irfan muthmare">Irfan muthmare</option>
+            <option value="Mahim">Mahim</option>
+            <option value="Iftekhar">Iftekhar</option>
+          </select>
+          <button class="btn primary" id="gameStartBtn">▶️ খেলা শুরু করো</button>
+        </div>
+
+        <div class="game-hud" id="gameHud" style="display:none;">
+          <div class="game-stat">
+            <span class="gs-label">স্কোর</span>
+            <span class="gs-value" id="gameScore">0</span>
+          </div>
+          <div class="game-stat">
+            <span class="gs-label">সময়</span>
+            <span class="gs-value" id="gameTimer">30</span>
+          </div>
+        </div>
+
+        <div class="game-stage" id="gameStage"></div>
+
+        <div class="game-over" id="gameOver" style="display:none;">
+          <div class="go-title">⏱️ সময় শেষ!</div>
+          <div class="go-score" id="goScore"></div>
+          <button class="btn primary" id="gamePlayAgainBtn">🔁 আবার খেলো</button>
+        </div>
+      </div>
+
+      <div class="game-leaderboard">
+        <h3>🏆 আজকের সেরা</h3>
+        <div class="game-lb-list" id="gameLbList"></div>
+        <div class="game-discount-note" id="gameDiscountNote"></div>
       </div>
     </section>
 <!-- ===== ADDA SPOTS MAP ===== -->
