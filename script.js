@@ -377,3 +377,203 @@ document.addEventListener("keydown", function (e) {
     }
 
 });
+/* ============ CREW SESSION CALCULATOR ============ */
+let ccItems = [];
+let ccPayers = [];
+let ccLastTotal = 0;
+
+const ccItemList = document.getElementById('ccItemList');
+const ccPayerList = document.getElementById('ccPayerList');
+const ccResult = document.getElementById('ccResult');
+const ccSettleResult = document.getElementById('ccSettleResult');
+const ccHistoryList = document.getElementById('ccHistoryList');
+
+// ---- আইটেম যোগ ----
+document.getElementById('ccAddItemBtn').addEventListener('click', () => {
+  const name = document.getElementById('ccItemName').value.trim();
+  const price = parseFloat(document.getElementById('ccItemPrice').value);
+  const qty = parseInt(document.getElementById('ccItemQty').value) || 1;
+
+  if(!name || isNaN(price) || price <= 0){
+    alert('নাম আর সঠিক দাম দাও।');
+    return;
+  }
+
+  ccItems.push({ id: Date.now(), name, price, qty });
+  document.getElementById('ccItemName').value = '';
+  document.getElementById('ccItemPrice').value = '';
+  document.getElementById('ccItemQty').value = '1';
+  renderCcItems();
+});
+
+function renderCcItems(){
+  ccItemList.innerHTML = '';
+  ccItems.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'cc-item-row';
+    row.innerHTML = `
+      <span class="cc-item-info">${item.name} <span class="cc-item-sub">× ${item.qty}</span></span>
+      <span class="cc-item-total">৳${item.price * item.qty}</span>
+      <button class="cc-remove-btn" data-id="${item.id}">✕</button>
+    `;
+    row.querySelector('.cc-remove-btn').addEventListener('click', () => {
+      ccItems = ccItems.filter(i => i.id !== item.id);
+      renderCcItems();
+    });
+    ccItemList.appendChild(row);
+  });
+}
+
+// ---- পেয়ার (কে কত দিলো) যোগ ----
+document.getElementById('ccAddPayerBtn').addEventListener('click', () => {
+  const name = document.getElementById('ccPayerName').value.trim();
+  const amount = parseFloat(document.getElementById('ccPayerAmount').value);
+
+  if(!name || isNaN(amount) || amount < 0){
+    alert('নাম আর সঠিক টাকার পরিমাণ দাও।');
+    return;
+  }
+
+  ccPayers.push({ id: Date.now(), name, amount });
+  document.getElementById('ccPayerName').value = '';
+  document.getElementById('ccPayerAmount').value = '';
+  renderCcPayers();
+});
+
+function renderCcPayers(){
+  ccPayerList.innerHTML = '';
+  ccPayers.forEach(p => {
+    const row = document.createElement('div');
+    row.className = 'cc-payer-row';
+    row.innerHTML = `
+      <span>${p.name}</span>
+      <span class="cc-payer-amount">৳${p.amount}</span>
+      <button class="cc-remove-btn" data-id="${p.id}">✕</button>
+    `;
+    row.querySelector('.cc-remove-btn').addEventListener('click', () => {
+      ccPayers = ccPayers.filter(x => x.id !== p.id);
+      renderCcPayers();
+    });
+    ccPayerList.appendChild(row);
+  });
+}
+
+// ---- Calculate Session ----
+document.getElementById('ccCalcBtn').addEventListener('click', () => {
+  if(ccItems.length === 0){
+    alert('আগে অন্তত একটা আইটেম যোগ করো।');
+    return;
+  }
+  const total = ccItems.reduce((sum, i) => sum + i.price * i.qty, 0);
+  const members = Math.max(1, parseInt(document.getElementById('ccMembers').value) || 1);
+  const perPerson = (total / members).toFixed(2);
+  ccLastTotal = total;
+
+  let rowsHtml = ccItems.map(i =>
+    `<div class="cc-result-row"><span>${i.name} (× ${i.qty})</span><span>৳${i.price * i.qty}</span></div>`
+  ).join('');
+
+  ccResult.innerHTML = `
+    ${rowsHtml}
+    <div class="cc-result-divider"></div>
+    <div class="cc-result-total">
+      <span class="cc-total-label">💰 Total</span>
+      <span class="cc-total-value">৳${total}</span>
+    </div>
+    <div class="cc-result-perperson">👥 ${members} জন — মাথাপিছু <b>৳${perPerson}</b></div>
+  `;
+  ccResult.classList.add('show');
+});
+
+// ---- Settle Up (কে কার কাছে কত পাবে) ----
+document.getElementById('ccSettleBtn').addEventListener('click', () => {
+  if(ccLastTotal === 0){
+    alert('আগে "Calculate Session" চাপো।');
+    return;
+  }
+  if(ccPayers.length === 0){
+    alert('আগে কে কত টাকা দিছে সেটা যোগ করো।');
+    return;
+  }
+
+  const members = Math.max(1, parseInt(document.getElementById('ccMembers').value) || 1);
+  const fairShare = ccLastTotal / members;
+
+  ccSettleResult.innerHTML = ccPayers.map(p => {
+    const diff = p.amount - fairShare;
+    let cls = 'zero', text = '৳0';
+    if(diff > 0.5){ cls = 'plus'; text = `+৳${diff.toFixed(2)} পাবে`; }
+    else if(diff < -0.5){ cls = 'minus'; text = `−৳${Math.abs(diff).toFixed(2)} দিবে`; }
+    return `<div class="cc-settle-row"><span>${p.name}</span><span class="${cls}">${text}</span></div>`;
+  }).join('');
+});
+
+// ---- Session History (localStorage তে সেভ) ----
+function loadCcHistory(){
+  const raw = localStorage.getItem('smokecircle_sessions');
+  return raw ? JSON.parse(raw) : [];
+}
+
+function renderCcHistory(){
+  const history = loadCcHistory();
+  ccHistoryList.innerHTML = '';
+
+  if(history.length === 0){
+    ccHistoryList.innerHTML = '<div class="cc-history-empty">এখনো কোনো সেশন সেভ করা হয়নি।</div>';
+    return;
+  }
+
+  history.slice().reverse().forEach(session => {
+    const card = document.createElement('div');
+    card.className = 'cc-history-card';
+    const chips = session.items.map(i => `<span class="cc-history-chip">${i.name} × ${i.qty}</span>`).join('');
+    card.innerHTML = `
+      <div class="cc-history-date">📅 ${session.date}</div>
+      <div class="cc-history-items">${chips}</div>
+      <div class="cc-history-total">
+        <span>${session.members} জন সদস্য</span>
+        <span>৳${session.total}</span>
+      </div>
+      <button class="cc-history-delete" data-id="${session.id}">মুছে ফেলো</button>
+    `;
+    card.querySelector('.cc-history-delete').addEventListener('click', () => {
+      const updated = loadCcHistory().filter(s => s.id !== session.id);
+      localStorage.setItem('smokecircle_sessions', JSON.stringify(updated));
+      renderCcHistory();
+    });
+    ccHistoryList.appendChild(card);
+  });
+}
+
+document.getElementById('ccSaveBtn').addEventListener('click', () => {
+  if(ccItems.length === 0 || ccLastTotal === 0){
+    alert('সেভ করার আগে অন্তত একটা আইটেম যোগ করে "Calculate Session" চাপো।');
+    return;
+  }
+  const members = Math.max(1, parseInt(document.getElementById('ccMembers').value) || 1);
+  const session = {
+    id: Date.now(),
+    date: new Date().toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' }),
+    items: ccItems,
+    total: ccLastTotal,
+    members: members
+  };
+  const history = loadCcHistory();
+  history.push(session);
+  localStorage.setItem('smokecircle_sessions', JSON.stringify(history));
+
+  // রিসেট করে নতুন সেশনের জন্য প্রস্তুত করো
+  ccItems = [];
+  ccPayers = [];
+  ccLastTotal = 0;
+  renderCcItems();
+  renderCcPayers();
+  ccResult.classList.remove('show');
+  ccSettleResult.innerHTML = '';
+  document.getElementById('ccMembers').value = 1;
+
+  renderCcHistory();
+  alert('সেশন সেভ হয়ে গেছে! ✅');
+});
+
+renderCcHistory();

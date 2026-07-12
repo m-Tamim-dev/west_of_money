@@ -43,7 +43,7 @@
 
     <section class="hero">
       <div class="eyebrow">একটা সিগারেট, একটা আড্ডা</div>
-      <h1>যাদের সাথে <span class="glow">টান</span> ভাগ করি,<br>তাদের জন্য এই জায়গা</h1>
+      <h1>ধোঁয়ার প্রতিটি টানে, <span class="glow">যাদের সঙ্গে ভাগ করেছি</span> বন্ধুত্বের গল্প—<br></h1>
       <p><strong>ভার্সিটির পিছনে চায়ের দোকানে</strong> — যত আড্ডা, যত গল্প, সব হইছে একটা সিগারেট ঘিরে।</p>
       <div class="hero-cta">
         <button class="btn primary">গ্রুপে জয়েন করো</button>
@@ -65,7 +65,7 @@
     <section class="profiles">
       <div class="features-head">
         <h2>পাপীরা</h2>
-        <span>একজন একজন করে যোগ হবে</span>
+        <span>.-.-.-.-.</span>
       </div>
       <div class="profile-grid">
 
@@ -184,11 +184,64 @@
 
       <div class="picker-card">
         <div class="picker-name-display" id="pickerDisplay">?</div>
-        <button class="btn primary picker-btn" id="pickerBtn">Who's lighting first?</button>
+        <button class="btn primary picker-btn" id="pickerBtn">বিড়ি কে আগে জ্বালাইবো ?</button>
 
         <div class="picker-list" id="pickerList">
           <!-- names injected by JS, editable via data-name attr already in markup below as fallback -->
         </div>
+      </div>
+    </section>
+<!-- ===== CREW SESSION CALCULATOR ===== -->
+    <section class="crew-calc-section">
+      <div class="features-head">
+        <h2>🍵 পাপের ক্যালকুলেটর</h2>
+        <span>আজকের আড্ডার পুরো হিসাব</span>
+      </div>
+
+      <div class="cc-card">
+
+        <!-- আইটেম যোগ করার অংশ -->
+        <div class="cc-block">
+          <h3>🍽️ আইটেম যোগ করো</h3>
+          <div class="cc-add-row">
+            <input type="text" id="ccItemName" placeholder="নাম (Benson, Tea...)">
+            <input type="number" id="ccItemPrice" placeholder="দাম ৳">
+            <input type="number" id="ccItemQty" placeholder="পরিমাণ" value="1" min="1">
+            <button id="ccAddItemBtn" class="btn primary">Add</button>
+          </div>
+          <div class="cc-item-list" id="ccItemList"></div>
+        </div>
+
+        <!-- সদস্য সংখ্যা -->
+        <div class="cc-block cc-members-block">
+          <label for="ccMembers">👥 মোট সদস্য সংখ্যা</label>
+          <input type="number" id="ccMembers" value="1" min="1">
+        </div>
+
+        <button id="ccCalcBtn" class="btn primary cc-calc-btn">🧮 Calculate Session</button>
+
+        <div class="cc-result" id="ccResult"></div>
+
+        <!-- কে কত দিলো -->
+        <div class="cc-block">
+          <h3>💸 কে কত টাকা দিল</h3>
+          <div class="cc-add-row">
+            <input type="text" id="ccPayerName" placeholder="নাম">
+            <input type="number" id="ccPayerAmount" placeholder="টাকা ৳">
+            <button id="ccAddPayerBtn" class="btn primary">Add</button>
+          </div>
+          <div class="cc-payer-list" id="ccPayerList"></div>
+          <button id="ccSettleBtn" class="btn">⚖️ কে কার কাছে কত পাবে</button>
+          <div class="cc-settle-result" id="ccSettleResult"></div>
+        </div>
+
+        <button id="ccSaveBtn" class="btn primary cc-save-btn">💾 Save Session</button>
+      </div>
+
+      <!-- হিস্টোরি -->
+      <div class="cc-history-block">
+        <h3 class="cc-history-title">📜 Session History</h3>
+        <div class="cc-history-list" id="ccHistoryList"></div>
       </div>
     </section>
 
@@ -212,7 +265,7 @@
 
     <section class="calculator-section">
 
-    <h2>🧮 Crew Calculator</h2>
+    <h2>🧮  ক্যালকুলেটর</h2>
 
     <div class="calculator">
 
