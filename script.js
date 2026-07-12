@@ -611,3 +611,239 @@ function spawnFallingCig(initial){
 for(let i = 0; i < CIG_RAIN_COUNT; i++){
   spawnFallingCig(true);
 }
+/* ============ SMOKE RING STREAK COUNTER ============ */
+const ringStage = document.getElementById('ringStage');
+const ringBtn = document.getElementById('ringBtn');
+const streakNumber = document.getElementById('streakNumber');
+const streakSub = document.getElementById('streakSub');
+
+// ---- রিং বানানোর অ্যানিমেশন ----
+ringBtn.addEventListener('click', () => {
+  const ring = document.createElement('div');
+  ring.className = 'smoke-ring';
+  ring.style.setProperty('--ring-dx', (Math.random() * 40 - 20) + 'px');
+  ringStage.appendChild(ring);
+
+  setTimeout(() => ring.remove(), 2300);
+});
+
+// ---- Streak হিসাব (localStorage দিয়ে) ----
+function todayStr(){
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+}
+
+function daysBetween(d1, d2){
+  const a = new Date(d1);
+  const b = new Date(d2);
+  return Math.round((b - a) / (1000 * 60 * 60 * 24));
+}
+
+function updateStreak(){
+  const today = todayStr();
+  const lastVisit = localStorage.getItem('smokecircle_lastVisit');
+  let streak = parseInt(localStorage.getItem('smokecircle_streak')) || 0;
+
+  if(lastVisit === today){
+    // আজকে আগেই ভিজিট হয়েছে, কিছু বদলাবে না
+  } else if(lastVisit && daysBetween(lastVisit, today) === 1){
+    // ঠিক গতকালও ভিজিট হয়েছিল — streak বাড়বে
+    streak += 1;
+  } else {
+    // গ্যাপ পড়ে গেছে বা প্রথমবার — streak রিসেট
+    streak = 1;
+  }
+
+  localStorage.setItem('smokecircle_lastVisit', today);
+  localStorage.setItem('smokecircle_streak', streak);
+
+  streakNumber.textContent = streak;
+
+  if(streak === 1){
+    streakSub.textContent = "নতুন করে শুরু — আজকে থেকে গোনা শুরু 🔥";
+  } else if(streak < 5){
+    streakSub.textContent = "স্ট্রিক বাড়তেছে, চালিয়ে যাও 💨";
+  } else {
+    streakSub.textContent = `${streak} দিন ধরে টানা! গ্রুপ সিরিয়াসলি অ্যাক্টিভ 🔥`;
+  }
+}
+updateStreak();
+/* ============ BIRTHDAY TRACKER ============ */
+// তোমার বন্ধুদের জন্মদিন এখানে বসাও — month হচ্ছে 1=জানুয়ারি, 12=ডিসেম্বর
+const birthdays = [
+  { name: "Tamim londe", day: 14, month: 3 },
+  { name: "Tushar Tute", day: 22, month: 7 },
+  { name: "Midul laure", day: 5, month: 9 },
+  { name: "Irfan muthmare", day: 30, month: 11 },
+  { name: "Mahim", day: 18, month: 1 },
+  { name: "Iftekhar", day: 9, month: 6 }
+];
+
+function daysUntilBirthday(day, month){
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  let next = new Date(today.getFullYear(), month - 1, day);
+  if(next < today){
+    next = new Date(today.getFullYear() + 1, month - 1, day);
+  }
+
+  const diffMs = next - today;
+  return Math.round(diffMs / (1000 * 60 * 60 * 24));
+}
+
+const monthNamesBn = [
+  "জানুয়ারি","ফেব্রুয়ারি","মার্চ","এপ্রিল","মে","জুন",
+  "জুলাই","আগস্ট","সেপ্টেম্বর","অক্টোবর","নভেম্বর","ডিসেম্বর"
+];
+
+function renderBirthdays(){
+  const withCountdown = birthdays.map(b => ({
+    ...b,
+    daysLeft: daysUntilBirthday(b.day, b.month)
+  })).sort((a, b) => a.daysLeft - b.daysLeft);
+
+  // ---- সবচেয়ে কাছেরটা হাইলাইট ----
+  const next = withCountdown[0];
+  const highlightEl = document.getElementById('bdayNextHighlight');
+
+  if(next.daysLeft === 0){
+    highlightEl.innerHTML = `
+      <div class="bh-label">🎉 আজকে জন্মদিন</div>
+      <div class="bh-name">${next.name}</div>
+      <div class="bh-days">🎂</div>
+      <div class="bh-sub">সবাই মিলে উইশ করো!</div>
+    `;
+  } else {
+    highlightEl.innerHTML = `
+      <div class="bh-label">পরবর্তী জন্মদিন</div>
+      <div class="bh-name">${next.name}</div>
+      <div class="bh-days">${next.daysLeft}</div>
+      <div class="bh-sub">দিন বাকি</div>
+    `;
+  }
+
+  // ---- সবার কার্ড ----
+  const grid = document.getElementById('bdayGrid');
+  grid.innerHTML = '';
+
+  withCountdown.forEach(b => {
+    const card = document.createElement('div');
+    card.className = 'bday-card';
+    if(b.daysLeft === 0) card.classList.add('today');
+    else if(b.daysLeft <= 7) card.classList.add('soon');
+
+    let countdownText;
+    if(b.daysLeft === 0) countdownText = '🎉 আজকেই!';
+    else if(b.daysLeft === 1) countdownText = 'আগামীকাল';
+    else countdownText = `আর ${b.daysLeft} দিন বাকি`;
+
+    card.innerHTML = `
+      <div class="bc-name">${b.name}</div>
+      <div class="bc-date">${b.day} ${monthNamesBn[b.month - 1]}</div>
+      <div class="bc-countdown">${countdownText}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+renderBirthdays();
+/* ============ LIGHTER FLICK CHALLENGE ============ */
+const lighterBtn = document.getElementById('lighterBtn');
+const flame = document.getElementById('flame');
+const sparkWrap = document.getElementById('sparkWrap');
+const lighterTime = document.getElementById('lighterTime');
+const lighterClicks = document.getElementById('lighterClicks');
+const lighterResult = document.getElementById('lighterResult');
+const lbList = document.getElementById('lbList');
+
+let gameActive = false;
+let startTime = 0;
+let clickCount = 0;
+let requiredClicks = 0;
+let timerInterval = null;
+
+function startNewAttempt(){
+  gameActive = true;
+  clickCount = 0;
+  startTime = performance.now();
+  requiredClicks = 3 + Math.floor(Math.random() * 5); // ৩ থেকে ৭ ক্লিক লাগবে
+  flame.classList.remove('lit');
+  lighterResult.textContent = '';
+  lighterResult.classList.remove('win');
+  lighterClicks.textContent = '0';
+  lighterTime.textContent = '0.00s';
+
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    const elapsed = (performance.now() - startTime) / 1000;
+    lighterTime.textContent = elapsed.toFixed(2) + 's';
+  }, 40);
+}
+
+function spawnSpark(){
+  for(let i = 0; i < 5; i++){
+    const s = document.createElement('div');
+    s.className = 'spark';
+    s.style.setProperty('--sx', (Math.random() * 24 - 12) + 'px');
+    s.style.setProperty('--sy', (-10 - Math.random() * 20) + 'px');
+    sparkWrap.appendChild(s);
+    setTimeout(() => s.remove(), 400);
+  }
+}
+
+lighterBtn.addEventListener('click', () => {
+  if(!gameActive){
+    startNewAttempt();
+    return;
+  }
+
+  clickCount++;
+  lighterClicks.textContent = clickCount;
+
+  if(clickCount >= requiredClicks){
+    // সফলভাবে জ্বলে গেলো
+    gameActive = false;
+    clearInterval(timerInterval);
+    const finalTime = (performance.now() - startTime) / 1000;
+    lighterTime.textContent = finalTime.toFixed(2) + 's';
+    flame.classList.add('lit');
+    lighterResult.textContent = `🔥 জ্বলে গেলো! ${clickCount} ক্লিকে, ${finalTime.toFixed(2)} সেকেন্ডে।`;
+    lighterResult.classList.add('win');
+
+    saveLighterScore(finalTime, clickCount);
+    lighterBtn.textContent = '🔁 আবার চেষ্টা করো';
+  } else {
+    // মিস — স্পার্ক দেখাবে
+    spawnSpark();
+    lighterBtn.textContent = '🔥 Flick করো';
+  }
+});
+
+function saveLighterScore(time, clicks){
+  const raw = localStorage.getItem('smokecircle_lighterScores');
+  const scores = raw ? JSON.parse(raw) : [];
+  scores.push({ time: time, clicks: clicks, date: new Date().toLocaleDateString('bn-BD') });
+  scores.sort((a, b) => a.time - b.time);
+  const top5 = scores.slice(0, 5);
+  localStorage.setItem('smokecircle_lighterScores', JSON.stringify(top5));
+  renderLeaderboard();
+}
+
+function renderLeaderboard(){
+  const raw = localStorage.getItem('smokecircle_lighterScores');
+  const scores = raw ? JSON.parse(raw) : [];
+
+  if(scores.length === 0){
+    lbList.innerHTML = '<div class="lb-empty">এখনো কেউ চেষ্টা করেনি — প্রথম হও!</div>';
+    return;
+  }
+
+  lbList.innerHTML = scores.map((s, i) => `
+    <div class="lb-row">
+      <span class="lb-rank">#${i + 1}</span>
+      <span class="lb-time">${s.time.toFixed(2)}s</span>
+      <span class="lb-clicks">${s.clicks} ক্লিক</span>
+    </div>
+  `).join('');
+}
+renderLeaderboard();
