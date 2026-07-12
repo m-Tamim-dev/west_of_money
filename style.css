@@ -1197,3 +1197,89 @@ footer{
 .cc-card{
   width: 100% !important;
 }
+/* ================= ADDA SPOTS MAP ================= */
+.map-section{
+  padding: 100px 6vw 40px;
+  border-top: 1px solid var(--line);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.map-wrap{
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  filter: grayscale(35%) contrast(1.1) brightness(0.85);
+  transition: filter 0.4s ease;
+}
+.map-wrap:hover{
+  filter: grayscale(0%) contrast(1) brightness(1);
+}
+.map-wrap iframe{
+  display: block;
+  width: 100%;
+  height: 480px;
+}
+@media (max-width: 600px){
+  .map-wrap iframe{ height: 340px; }
+}
+/* ================= FALLING CIGARETTES ================= */
+.cig-rain-layer{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.falling-cig{
+  position: absolute;
+  top: -40px;
+  width: 26px;
+  height: 7px;
+  border-radius: 3px;
+  overflow: hidden;
+  opacity: 0.55;
+  animation-name: cig-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+/* সিগারেটের শরীর — ফিল্টার + সাদা অংশ */
+.falling-cig::before{
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 35%;
+  background: linear-gradient(180deg, #e8b355, #a9721c 60%, #6b4310);
+}
+.falling-cig::after{
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 65%;
+  background: linear-gradient(180deg, #ffffff, #e0d7c5 60%, #d8cdb8);
+}
+
+/* ছোট্ট জ্বলন্ত মাথা */
+.falling-cig .tip{
+  position: absolute;
+  right: -2px;
+  top: -1px; bottom: -1px;
+  width: 5px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff2d0, var(--ember-bright) 45%, var(--ember) 80%);
+  box-shadow: 0 0 6px 2px rgba(247,165,97,0.6);
+}
+
+@keyframes cig-fall{
+  0%{
+    transform: translate(0, -10vh) rotate(var(--r0, 15deg));
+    opacity: 0;
+  }
+  10%{ opacity: 0.55; }
+  90%{ opacity: 0.4; }
+  100%{
+    transform: translate(var(--dx, 60px), 110vh) rotate(var(--r1, 200deg));
+    opacity: 0;
+  }
+}

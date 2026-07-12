@@ -577,3 +577,37 @@ document.getElementById('ccSaveBtn').addEventListener('click', () => {
 });
 
 renderCcHistory();
+/* ============ FALLING CIGARETTES ANIMATION ============ */
+const cigRainLayer = document.getElementById('cigRainLayer');
+const CIG_RAIN_COUNT = 10;
+
+function spawnFallingCig(initial){
+  const cig = document.createElement('div');
+  cig.className = 'falling-cig';
+
+  const tip = document.createElement('div');
+  tip.className = 'tip';
+  cig.appendChild(tip);
+
+  const startLeft = Math.random() * 100;
+  cig.style.left = startLeft + 'vw';
+
+  const fallDuration = 8 + Math.random() * 10;
+  const delay = initial ? Math.random() * fallDuration : 0;
+  cig.style.animationDuration = fallDuration + 's';
+  cig.style.animationDelay = '-' + delay + 's';
+
+  // পাশ থেকে দুলতে দুলতে পড়া (drift) + ঘোরা (rotation)
+  cig.style.setProperty('--dx', (Math.random() * 200 - 100) + 'px');
+  cig.style.setProperty('--r0', (Math.random() * 60 - 30) + 'deg');
+  cig.style.setProperty('--r1', (360 + Math.random() * 360) + 'deg');
+
+  const scale = 0.6 + Math.random() * 0.8;
+  cig.style.transform = `scale(${scale})`;
+
+  cigRainLayer.appendChild(cig);
+}
+
+for(let i = 0; i < CIG_RAIN_COUNT; i++){
+  spawnFallingCig(true);
+}
