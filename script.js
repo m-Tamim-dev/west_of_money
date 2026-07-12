@@ -1313,6 +1313,13 @@ renderGameLeaderboard();
 
   document.getElementById('pgStartBtn').addEventListener('click', startGame);
   document.getElementById('pgRetryBtn').addEventListener('click', startGame);
+  document.getElementById('pgNewPlayerBtn').addEventListener('click', () => {
+    pgOverlay.style.display = 'none';
+    pgHud.style.display = 'none';
+    pgSetup.style.display = 'flex';
+    document.getElementById('pgNameInput').value = '';
+    document.getElementById('pgNameInput').focus();
+  });
 
   function getScores(){
     const raw = localStorage.getItem('smokecircle_planeScores');

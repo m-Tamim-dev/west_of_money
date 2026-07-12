@@ -2002,7 +2002,10 @@ footer{
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
+}
+.pg-overlay .btn{
+  min-width: 180px;
 }
 .pg-overlay-title{
   font-family:'Bebas Neue', sans-serif;
