@@ -1187,3 +1187,13 @@ footer{
   text-decoration: underline;
 }
 .cc-history-delete:hover{ color: #e0553a; }
+/* ===== FORCE FIX: crew calculator centering ===== */
+.crew-calc-section{
+  padding: 100px 6vw 40px !important;
+  max-width: 820px !important;
+  margin: 0 auto !important;
+  width: auto !important;
+}
+.cc-card{
+  width: 100% !important;
+}
