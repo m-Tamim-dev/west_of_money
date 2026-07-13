@@ -1366,3 +1366,50 @@ renderGameLeaderboard();
 
   renderPgLeaderboard();
 })();
+/* ============ PHOTO ALBUM LIGHTBOX ============ */
+function openLightbox(src){
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').classList.add('show');
+}
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('show');
+}
+/* ============ PHOTO ALBUM LIGHTBOX (with prev/next navigation) ============ */
+const albumImages = [
+  'album/pic1.jpg',
+  'album/pic2.jpg',
+  'album/pic3.jpg',
+  'album/pic4.jpg'
+];
+
+let currentImageIndex = 0;
+
+function openLightbox(index){
+  currentImageIndex = index;
+  document.getElementById('lightboxImg').src = albumImages[currentImageIndex];
+  document.getElementById('lightbox').classList.add('show');
+}
+
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('show');
+}
+
+function showPrevImage(){
+  currentImageIndex = (currentImageIndex - 1 + albumImages.length) % albumImages.length;
+  document.getElementById('lightboxImg').src = albumImages[currentImageIndex];
+}
+
+function showNextImage(){
+  currentImageIndex = (currentImageIndex + 1) % albumImages.length;
+  document.getElementById('lightboxImg').src = albumImages[currentImageIndex];
+}
+
+// কীবোর্ডের ← → দিয়েও ছবি বদলানো যাবে
+document.addEventListener('keydown', (e) => {
+  const lightbox = document.getElementById('lightbox');
+  if(!lightbox.classList.contains('show')) return;
+
+  if(e.key === 'ArrowLeft') showPrevImage();
+  else if(e.key === 'ArrowRight') showNextImage();
+  else if(e.key === 'Escape') closeLightbox();
+});

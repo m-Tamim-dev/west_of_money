@@ -127,6 +127,53 @@
       </div>
     </section>
 
+    <!-- ===== PHOTO ALBUM ===== -->
+    <section class="album-section">
+      <div class="features-head">
+        <h2>📸 আমাদের মুহূর্তগুলো</h2>
+        <span>ছাদের আড্ডা, রাতের গল্প — সব একসাথে</span>
+      </div>
+
+      <div class="album-grid" id="albumGrid">
+        <!-- প্রতিটা ছবির জন্য একটা করে লাইন — নতুন ছবি যোগ করতে এভাবে আরেকটা লাইন বসাও -->
+        <div class="album-item" onclick="openLightbox(0)">
+          <img src="album/pic1.jpg" alt="আড্ডার মুহূর্ত">
+        </div>
+        <div class="album-item" onclick="openLightbox(1)">
+          <img src="album/pic2.jpg" alt="আড্ডার মুহূর্ত">
+        </div>
+        <div class="album-item" onclick="openLightbox(2)">
+          <img src="album/pic3.jpg" alt="আড্ডার মুহূর্ত">
+        </div>
+         <div class="album-item" onclick="openLightbox(3)">
+          <img src="album/pic4.jpg" alt="আড্ডার মুহূর্ত">
+        </div>
+      </div>
+    </section>
+
+    <!-- বড় করে ছবি দেখার জন্য লাইটবক্স -->
+<div class="lightbox" id="lightbox">
+  <span class="lightbox-close" onclick="closeLightbox()">✕</span>
+  <span class="lightbox-nav lightbox-prev" onclick="event.stopPropagation(); showPrevImage()">‹</span>
+  <img id="lightboxImg" src="" alt="বড় ছবি" onclick="event.stopPropagation()">
+  <span class="lightbox-nav lightbox-next" onclick="event.stopPropagation(); showNextImage()">›</span>
+</div>
+
+    <!-- ===== ADDA VIDEO ===== -->
+    <section class="video-section">
+      <div class="features-head">
+        <h2>🎬 আমাদের আড্ডা</h2>
+        <span>একটা ঝলক দেখে নাও</span>
+      </div>
+
+      <div class="video-wrap">
+        <video controls preload="metadata" poster="img/profile1.jpg">
+          <source src="video/adda.mp4" type="video/mp4">
+          তোমার ব্রাউজার ভিডিও সাপোর্ট করে না।
+        </video>
+      </div>
+    </section>
+
     <!-- ===== SMOKE SESSION TIMER CALCULATOR ===== -->
     <section class="calc-section">
       <div class="features-head">

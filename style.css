@@ -584,6 +584,7 @@ h1 .glow{
   font-family:'JetBrains Mono', monospace;
   font-size: 15px;
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 .calc-input-wrap input::-webkit-outer-spin-button,
 .calc-input-wrap input::-webkit-inner-spin-button{
@@ -2068,3 +2069,133 @@ footer{
   font-style: italic;
 }
 .pg-discount-note b{ color: var(--ember-bright); font-style: normal; }
+/* ================= ADDA VIDEO ================= */
+.video-section{
+  padding: 100px 6vw 40px;
+  border-top: 1px solid var(--line);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.video-wrap{
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+
+.video-wrap video{
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #000;
+}
+/* ================= PHOTO ALBUM ================= */
+.album-section{
+  padding: 100px 6vw 40px;
+  border-top: 1px solid var(--line);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.album-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.album-item{
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  cursor: pointer;
+  background: #17130f;
+}
+
+.album-item img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(30%) contrast(1.05) brightness(0.9);
+  transition: filter 0.4s ease, transform 0.5s ease;
+}
+
+.album-item:hover img{
+  filter: grayscale(0%) contrast(1.1) brightness(1);
+  transform: scale(1.08);
+}
+
+.album-item::after{
+  content: '🔍';
+  position: absolute;
+  top: 10px; right: 10px;
+  background: rgba(12,10,9,0.7);
+  color: var(--ember-bright);
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.album-item:hover::after{ opacity: 1; }
+
+/* লাইটবক্স (বড় করে ছবি দেখার overlay) */
+.lightbox{
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(8,6,5,0.94);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  padding: 30px;
+}
+.lightbox.show{
+  display: flex;
+}
+.lightbox img{
+  max-width: 90vw;
+  max-height: 85vh;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  animation: lightbox-zoom 0.25s ease;
+}
+@keyframes lightbox-zoom{
+  from{ transform: scale(0.9); opacity: 0; }
+  to{ transform: scale(1); opacity: 1; }
+}
+.lightbox-close{
+  position: absolute;
+  top: 24px; right: 30px;
+  color: var(--ash);
+  font-size: 26px;
+  cursor: pointer;
+}
+/* ================= LIGHTBOX NAVIGATION (prev/next) ================= */
+.lightbox-nav{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 44px;
+  color: var(--ash);
+  cursor: pointer;
+  user-select: none;
+  padding: 10px 18px;
+  transition: color 0.2s ease, transform 0.2s ease;
+  z-index: 210;
+}
+.lightbox-nav:hover{
+  color: var(--ember-bright);
+}
+.lightbox-prev{ left: 10px; }
+.lightbox-next{ right: 10px; }
+
+@media (max-width: 600px){
+  .lightbox-nav{ font-size: 32px; padding: 8px 12px; }
+}
